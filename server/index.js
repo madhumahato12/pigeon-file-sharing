@@ -89,12 +89,19 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const PORT = 3000;
+const cors = require('cors');
+app.use(cors());
 
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const uploadPath = path.join(__dirname, 'uploads');
+
+
 const META_FILE = path.join(__dirname, 'fileMeta.json');
 
 // Ensure upload directory exists
-if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
+// if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath);
+}
 
 // Load metadata or initialize
 let fileMeta = {};

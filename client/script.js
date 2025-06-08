@@ -51,7 +51,11 @@ form.addEventListener('submit', async (e) => {
   formData.append('file', file);
 
   try {
-    const res = await fetch('/upload', { method: 'POST', body: formData });
+    // const res = await fetch('/upload', { method: 'POST', body: formData });
+    const res = await fetch('https://pigeon-back.onrender.com/uploads', {
+  method: 'POST',
+  body: formData
+});
     const data = await res.json();
     link.href = data.link;
     link.textContent = data.link;
