@@ -52,7 +52,7 @@ form.addEventListener('submit', async (e) => {
 
   try {
     // const res = await fetch('/upload', { method: 'POST', body: formData });
-    const res = await fetch('https://pigeon-back.onrender.com/uploads', {
+    const res = await fetch('https://pigeon-back.onrender.com/upload', {
   method: 'POST',
   body: formData
 });
