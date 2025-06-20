@@ -6,13 +6,18 @@
   <title>Pigeon File Sharing</title>
   <link rel="stylesheet" href="style.css" />
   <!-- QRCode.js CDN -->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> 
+  <div id="preview" style="margin-top: 20px;"></div>
+
 </head>
 <body>
   <div class="container">
     <h1>Pigeon File Sharing</h1>
     <form id="uploadForm">
-      <input type="file" id="fileInput" required />
+       <input type="file" id="fileInput" />
+
+
       <button type="submit">Upload</button>
     </form>
     <div id="result" class="hidden">

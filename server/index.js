@@ -4,12 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const PORT = 3000;
+const mime = require('mime-types');
+
 const cors = require('cors');
 app.use(cors());
 
 const uploadPath = path.join(__dirname, 'upload');
-
-
 const META_FILE = path.join(__dirname, 'fileMeta.json');
 
 // Ensure upload directory exists
@@ -17,7 +17,6 @@ const META_FILE = path.join(__dirname, 'fileMeta.json');
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath);
 }
-
 // Load metadata or initialize
 let fileMeta = {};
 if (fs.existsSync(META_FILE)) {
@@ -37,7 +36,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../client')));// changes public to client// need add in github morning
 app.use(express.json());
 
 // Upload endpoint
@@ -48,27 +47,34 @@ const expiresAt = Date.now() + 60 * 1000; // expires in 1 minute
 
   fileMeta[filename] = { path: req.file.path, expiresAt };
   fs.writeFileSync(META_FILE, JSON.stringify(fileMeta));
-   const host = req.headers.host;
-   const protocol = req.protocol;
-  res.json({ link: `http://localhost:${PORT}/file/${filename}` });
+  const host = req.get('host');
+const protocol = req.protocol;
+res.json({ link: `${protocol}://${host}/file/${filename}` });
+
 });
 
-// Download endpoint
 app.get('/file/:filename', (req, res) => {
   const { filename } = req.params;
   const meta = fileMeta[filename];
 
   if (!meta) return res.status(404).send('File not found');
+
   if (Date.now() > meta.expiresAt) {
-    // Expired file
     fs.unlinkSync(meta.path);
     delete fileMeta[filename];
     fs.writeFileSync(META_FILE, JSON.stringify(fileMeta));
     return res.status(410).send('Link expired');
   }
 
-  res.download(meta.path);
+  const filePath = path.resolve(meta.path);
+  const contentType = mime.lookup(filePath) || 'application/octet-stream';
+
+  res.setHeader('Content-Type', contentType);
+  res.setHeader('Content-Disposition', 'inline'); 
+
+  res.sendFile(filePath);
 });
+
 
 // Clean up expired files periodically
 setInterval(() => {
