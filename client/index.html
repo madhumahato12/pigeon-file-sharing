@@ -1,33 +1,29 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pigeon File Sharing</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- QRCode.js CDN -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> 
 </head>
 <body>
   <div class="container">
     <h1>Pigeon File Sharing</h1>
+   
     <form id="uploadForm">
-  <input type="file" id="fileInput" />
-  <button type="submit">Upload</button>
-</form>
-    <!-- <form id="uploadForm">
        <input type="file" id="fileInput"accept=".pdf,.docx,.pptx,.xlsx" />
         
 
 
       <button type="submit">Upload</button>
-    </form> -->
-    <!-- <div id="result" class="hidden">
+    </form>
+    <div id="result" class="hidden">
       <p>Share this secret link (valid for 24h):</p>
       <a id="link" target="_blank"></a>
       <div id="qrcode" style="margin-top: 20px;"></div>
-    </div> -->
+    </div>
     <div id="result" class="hidden">
   <p>Shareable Link: <a id="link" href="#" target="_blank"></a></p>
   <div id="qrcode"></div>
@@ -39,4 +35,36 @@
 </html> 
 
 
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pigeon File Sharing</title>
+  <link rel="stylesheet" href="style.css" />
 
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> 
+</head>
+<body>
+  <div class="container">
+    <h1>Pigeon File Sharing</h1>
+
+    <form id="uploadForm">
+      <input type="file" id="fileInput" accept=".pdf,.docx,.pptx,.xlsx" />
+      <br />
+      <button type="submit">Upload</button>
+    </form>
+
+    <div id="result" class="hidden">
+      <p>Share this secret link (valid for 24 hours):</p>
+      <a id="link" href="#" target="_blank" rel="noopener noreferrer">Link will appear here</a>
+      <div id="qrcode" style="margin-top: 20px;"></div>
+      <p id="preview"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
