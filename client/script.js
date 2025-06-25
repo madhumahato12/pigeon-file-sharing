@@ -7,7 +7,7 @@ const preview = document.getElementById('preview');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const file = document.getElementById('fileInput')?.files?.[0];
+  const file = document.getElementById('fileInput')?.files?.[0] || document.getElementById('upload')?.files?.[0];
   if (!file) return;
 
   const formData = new FormData();
@@ -26,7 +26,7 @@ form.addEventListener('submit', async (e) => {
     link.textContent = data.link;
     result.classList.remove('hidden');
 
-    // Generate QR code
+    // Generate QR Code
     qrcodeContainer.innerHTML = '';
     new QRCode(qrcodeContainer, {
       text: data.link,
@@ -34,18 +34,10 @@ form.addEventListener('submit', async (e) => {
       height: 200,
     });
 
-    const fileName = file.name.toLowerCase();
+    // Show file preview
     const fileType = file.type;
+    const fileName = file.name.toLowerCase();
 
-    // Auto-download file
-    const downloadLink = document.createElement('a');
-    downloadLink.href = data.link;
-    downloadLink.download = file.name;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-
-    // Show preview
     if (fileType === 'application/pdf') {
       preview.innerHTML = `
         <h3>PDF Preview:</h3>
@@ -53,18 +45,14 @@ form.addEventListener('submit', async (e) => {
       `;
     } else if (fileName.endsWith('.docx')) {
       preview.innerHTML = `
-        <h3>DOCX Uploaded</h3>
-        <p>Preview not supported in browser. You can open it using Word or Google Docs.</p>
-        <a href="${data.link}" target="_blank" class="btn">Open DOCX</a>
-      `;
-    } else if (fileName.endsWith('.pptx')) {
-      preview.innerHTML = `
-        <h3>PPTX Uploaded</h3>
-        <p>Preview not supported in browser. You can open it using PowerPoint or Google Slides.</p>
-        <a href="${data.link}" target="_blank" class="btn">Open PPTX</a>
+        <h3>DOCX File Uploaded:</h3>
+        <p>Preview not available. Click below to open or download the file:</p>
+        <a href="${data.link}" target="_blank" class="btn">Download DOCX</a>
       `;
     } else {
-      preview.innerHTML = `<p>Unsupported file type.</p>`;
+      preview.innerHTML = `
+        <p>Unsupported file type.</p>
+      `;
     }
 
   } catch (err) {
@@ -72,3 +60,4 @@ form.addEventListener('submit', async (e) => {
     console.error(err);
   }
 });
+
