@@ -7,8 +7,11 @@ const preview = document.getElementById('preview');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const file = document.getElementById('fileInput')?.files?.[0] || document.getElementById('upload')?.files?.[0];
-  if (!file) return;
+  const file = document.getElementById('fileInput')?.files?.[0];
+  if (!file) {
+    alert('Please select a file.');
+    return;
+  }
 
   const formData = new FormData();
   formData.append('file', file);
@@ -19,14 +22,20 @@ form.addEventListener('submit', async (e) => {
       body: formData
     });
 
+    // ✅ Check response
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Server error: ${res.status} - ${errorText}`);
+    }
+
     const data = await res.json();
 
-    // Show secret link
+    // ✅ Show secret link
     link.href = data.link;
     link.textContent = data.link;
     result.classList.remove('hidden');
 
-    // Generate QR Code
+    // ✅ Generate QR code
     qrcodeContainer.innerHTML = '';
     new QRCode(qrcodeContainer, {
       text: data.link,
@@ -34,30 +43,44 @@ form.addEventListener('submit', async (e) => {
       height: 200,
     });
 
-    // Show file preview
-    const fileType = file.type;
+    // ✅ Auto-download the file
+    const downloadLink = document.createElement('a');
+    downloadLink.href = data.link;
+    downloadLink.download = file.name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    // ✅ Determine file type and show short info (not preview)
     const fileName = file.name.toLowerCase();
 
-    if (fileType === 'application/pdf') {
+    if (fileName.endsWith('.pdf')) {
       preview.innerHTML = `
-        <h3>PDF Preview:</h3>
-        <iframe src="${data.link}" width="100%" height="500px" style="border:1px solid #ccc;"></iframe>
+        <p>PDF file uploaded successfully. Use the link or QR code to download.</p>
       `;
     } else if (fileName.endsWith('.docx')) {
       preview.innerHTML = `
-        <h3>DOCX File Uploaded:</h3>
-        <p>Preview not available. Click below to open or download the file:</p>
-        <a href="${data.link}" target="_blank" class="btn">Download DOCX</a>
+        <p>Word document uploaded successfully.</p>
+        <a href="${data.link}" target="_blank" class="btn">Open DOCX</a>
+      `;
+    } else if (fileName.endsWith('.pptx')) {
+      preview.innerHTML = `
+        <p>PowerPoint file uploaded successfully.</p>
+        <a href="${data.link}" target="_blank" class="btn">Open PPTX</a>
+      `;
+    } else if (fileName.endsWith('.xlsx')) {
+      preview.innerHTML = `
+        <p>Excel file uploaded successfully.</p>
+        <a href="${data.link}" target="_blank" class="btn">Open XLSX</a>
       `;
     } else {
       preview.innerHTML = `
-        <p>Unsupported file type.</p>
+        <p>File uploaded successfully. (Unknown file type)</p>
       `;
     }
 
   } catch (err) {
     alert('Upload failed.');
-    console.error(err);
+    console.error('Upload failed:', err.message || err);
   }
 });
-
