@@ -22,28 +22,22 @@ form.addEventListener('submit', async (e) => {
       body: formData
     });
 
-    // ✅ Check response
     if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`Server error: ${res.status} - ${errorText}`);
+      const text = await res.text();
+      throw new Error(`Upload error: ${res.status} • ${text}`);
     }
 
     const data = await res.json();
 
-    // ✅ Show secret link
+    console.log('Server returned link:', data.link);
+
     link.href = data.link;
     link.textContent = data.link;
     result.classList.remove('hidden');
 
-    // ✅ Generate QR code
     qrcodeContainer.innerHTML = '';
-    new QRCode(qrcodeContainer, {
-      text: data.link,
-      width: 200,
-      height: 200,
-    });
+    new QRCode(qrcodeContainer, { text: data.link, width: 200, height: 200 });
 
-    // ✅ Auto-download the file
     const downloadLink = document.createElement('a');
     downloadLink.href = data.link;
     downloadLink.download = file.name;
@@ -51,36 +45,15 @@ form.addEventListener('submit', async (e) => {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 
-    // ✅ Determine file type and show short info (not preview)
-    const fileName = file.name.toLowerCase();
-
-    if (fileName.endsWith('.pdf')) {
-      preview.innerHTML = `
-        <p>PDF file uploaded successfully. Use the link or QR code to download.</p>
-      `;
-    } else if (fileName.endsWith('.docx')) {
-      preview.innerHTML = `
-        <p>Word document uploaded successfully.</p>
-        <a href="${data.link}" target="_blank" class="btn">Open DOCX</a>
-      `;
-    } else if (fileName.endsWith('.pptx')) {
-      preview.innerHTML = `
-        <p>PowerPoint file uploaded successfully.</p>
-        <a href="${data.link}" target="_blank" class="btn">Open PPTX</a>
-      `;
-    } else if (fileName.endsWith('.xlsx')) {
-      preview.innerHTML = `
-        <p>Excel file uploaded successfully.</p>
-        <a href="${data.link}" target="_blank" class="btn">Open XLSX</a>
-      `;
-    } else {
-      preview.innerHTML = `
-        <p>File uploaded successfully. (Unknown file type)</p>
-      `;
-    }
+    const fname = file.name.toLowerCase();
+    if (fname.endsWith('.pdf')) preview.textContent = 'PDF uploaded.';
+    else if (fname.endsWith('.docx')) preview.textContent = 'DOCX uploaded.';
+    else if (fname.endsWith('.pptx')) preview.textContent = 'PPTX uploaded.';
+    else if (fname.endsWith('.xlsx')) preview.textContent = 'XLSX uploaded.';
+    else preview.textContent = 'File uploaded.';
 
   } catch (err) {
-    alert('Upload failed.');
-    console.error('Upload failed:', err.message || err);
+    alert('Upload failed: ' + err.message);
+    console.error('Upload error detail:', err);
   }
 });
