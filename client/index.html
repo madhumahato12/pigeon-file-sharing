@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pigeon File Sharing</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- QRCode.js CDN -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> 
 </head>
 <body>
   <div class="container">
     <h1>Pigeon File Sharing</h1>
-
     <form id="uploadForm">
-      <input type="file" id="fileInput" accept=".pdf,.docx,.pptx" />
+      <!-- <input type="file" id="fileInput" required /> -->
+       <input type="file" id="fileInput" />
+
+
       <button type="submit">Upload</button>
     </form>
-
     <div id="result" class="hidden">
       <p>Share this secret link (valid for 24h):</p>
       <a id="link" target="_blank"></a>
       <div id="qrcode" style="margin-top: 20px;"></div>
     </div>
-
-    <div id="preview" style="margin-top: 20px;"></div>
   </div>
-
   <script src="script.js"></script>
 </body>
-</html>
+</html> 
 
 
 
